@@ -1,0 +1,213 @@
+
+#define STEP_PAUSE  100
+#define DEFAULT_POWER 3
+#define FULL_POWER 7
+
+
+
+void StartMotor(const int motor, const int & power) {
+   if (power >= 0) { 
+      SetDirection(motor, OUT_FWD);
+   } else {
+      SetDirection(motor, OUT_REV);
+   }
+   if (power > 7 || power < -7) {
+      SetPower(motor, 7);
+   } else {
+      SetPower(motor, abs(power));
+   }
+   if (power == 0) {
+      SetOutput(motor, OUT_FLOAT);
+   } else {
+      SetOutput(motor, OUT_ON);
+   }
+}
+
+
+void Begin() {
+}
+
+
+void WaitForLight() {
+   SetSensor(SENSOR_3, SENSOR_LIGHT);
+   until (SensorValue(2) > 48) {
+      Wait(1);
+   }
+}
+
+
+void WaitForDark() {
+   SetSensor(SENSOR_3, SENSOR_LIGHT);
+   until (SensorValue(2) < 42) {
+      Wait(1);
+   }
+}
+
+
+void WaitForPress() {
+   SetSensor(SENSOR_1, SENSOR_TOUCH);
+   until (SensorValueBool(SENSOR_1)) {
+      Wait(1);
+   }
+}
+
+
+void WaitForRelease() {
+   SetSensor(SENSOR_1, SENSOR_TOUCH);
+   until (!SensorValueBool(SENSOR_1)) {
+      Wait(1);
+   }
+}
+
+
+void Forward() {
+   StartMotor(OUT_A, DEFAULT_POWER);
+   StartMotor(OUT_C, DEFAULT_POWER);
+   Wait(100);
+   Off(OUT_A);
+   Off(OUT_C);
+   Wait(STEP_PAUSE);
+}
+
+
+void Backward() {
+   StartMotor(OUT_A, -DEFAULT_POWER);
+   StartMotor(OUT_C, -DEFAULT_POWER);
+   Wait(100);
+   Off(OUT_A);
+   Off(OUT_C);
+   Wait(STEP_PAUSE);
+}
+
+
+void Left() {
+   StartMotor(OUT_A, -FULL_POWER);
+   StartMotor(OUT_C, FULL_POWER);
+   Wait(50);
+   Off(OUT_A);
+   Off(OUT_C);
+   Wait(STEP_PAUSE);
+}
+
+
+void Right() {
+   StartMotor(OUT_A, FULL_POWER);
+   StartMotor(OUT_C, -FULL_POWER);
+   Wait(50);
+   Off(OUT_A);
+   Off(OUT_C);
+   Wait(STEP_PAUSE);
+}
+
+
+void Spin() {
+   StartMotor(OUT_A, FULL_POWER);
+   StartMotor(OUT_C, -FULL_POWER);
+   Wait(400);
+   Off(OUT_A);
+   Off(OUT_C);
+   Wait(STEP_PAUSE);
+}
+
+
+void Shake() {
+   int i;
+   int pa = FULL_POWER;
+   int pc = -FULL_POWER;
+
+   for (i = 0; i < 10; i++) {
+      StartMotor(OUT_A, pa);
+      StartMotor(OUT_C, pc);
+      Wait(10);
+      pa *= -1;
+      pc *= -1;
+   }
+   Off(OUT_A);
+   Off(OUT_C);
+   Wait(STEP_PAUSE);
+}
+
+
+void Wiggle() {
+   int i;
+
+   for (i = 0; i < 5; i++) {
+      StartMotor(OUT_A, 0);
+      StartMotor(OUT_C, 3);
+      Wait(20);
+      StartMotor(OUT_A, 3);
+      StartMotor(OUT_C, 0);
+      Wait(10);
+   }
+   Off(OUT_A);
+   Off(OUT_C);
+   Wait(STEP_PAUSE);
+}
+
+
+void Shuffle() {
+   int i;
+   for (i = 0; i < 4; i++) {
+      StartMotor(OUT_A, DEFAULT_POWER);
+      StartMotor(OUT_C, DEFAULT_POWER);
+      Wait(50);
+      StartMotor(OUT_A, -DEFAULT_POWER);
+      StartMotor(OUT_C, -DEFAULT_POWER);
+      Wait(50);
+   }
+   Off(OUT_A);
+   Off(OUT_C);
+   Wait(STEP_PAUSE);
+}
+
+
+void Beep() {
+   PlayTone(600, 30);
+   Wait(60);
+}
+
+
+void Growl() {
+   PlayTone(500, 30);
+   Wait(60);
+}
+
+
+void Whistle() {
+   PlayTone(700, 30);
+   Wait(60);
+}
+
+
+void Sing() {
+   PlaySound(SOUND_UP);
+   PlaySound(SOUND_DOWN);
+   PlaySound(SOUND_UP);
+   Wait(140);
+   Wait(STEP_PAUSE);
+}
+
+
+void MoonSkill() { 
+   Forward();
+   Wait(100);
+   Backward();
+}
+
+
+void DiamondSkill() {
+   PlayTone(400, 30);
+   Wait(60);
+}
+
+
+void CircleSkill() {
+   PlayTone(500, 30);
+   Wait(60);
+}
+
+
+void StarSkill() { 
+   PlayTone(600, 30);
+   Wait(60);
+}

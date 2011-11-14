@@ -1,0 +1,4 @@
+#define IDI_ICON          701
+#define IDI_ICON_SM       702
+
+IDI_ICON	ICON	"icon.ico"

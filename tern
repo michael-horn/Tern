@@ -1,0 +1,1 @@
+/System/Library/Frameworks/JavaVM.framework/Versions/1.5.0/Home/bin/java -d32 -Xmx512M -cp lib/tern.jar tern.Main

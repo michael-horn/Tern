@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="tern" default="build">
+
+
+<!-- *********************************************************** -->
+<!--                         INIT                                -->
+<!-- *********************************************************** -->
+   <target name="init">
+      <tstamp>
+         <format property="build.date" pattern="MM-dd-yyyy"/>
+      </tstamp>
+      <property name="build.compiler" value="modern"/>
+      <property name="project.name" value="tern" />
+   </target>
+
+
+   
+<!-- *********************************************************** -->
+<!--                         CLEAN                               -->
+<!-- *********************************************************** -->
+   <target name="clean" depends="init">
+      <delete dir="classes"/>
+      <delete file="lib/${project.name}.jar"/>
+   </target>
+
+   
+
+<!-- *********************************************************** -->
+<!--                       COMPILE                               -->
+<!-- *********************************************************** -->
+   <target name="compile" depends="init">
+      <mkdir dir="classes"/>
+      <chmod dir="classes" perm="755" />
+      <javac srcdir="java"
+             destdir="classes"
+             deprecation="true"
+             debug="true">
+         <classpath>
+         </classpath>     
+      </javac>     
+      <mkdir dir="classes/images" />
+      <copy todir="classes/images">
+        <fileset dir="images" includes="**/*.gif"/>
+        <fileset dir="images" includes="**/*.jpg"/>
+        <fileset dir="images" includes="**/*.png"/>
+      </copy>
+      <mkdir dir="classes/sounds" />
+      <copy todir="classes/sounds">
+        <fileset dir="sounds" includes="**/*.wav"/>
+	</copy>
+   </target>
+
+   
+
+<!-- *********************************************************** -->
+<!--                       PACKAGE                               -->
+<!-- *********************************************************** -->
+   <target name="package" depends="compile">
+      <mkdir dir="lib"/>
+      <chmod dir="lib" perm="755" />
+      <jar jarfile="lib/${project.name}.jar"
+           basedir="classes"
+           update="false"/>
+   </target>
+
+   
+<!-- *********************************************************** -->
+<!--                       DEPLOY                                -->
+<!-- *********************************************************** -->
+   <target name="dist" depends="build">
+      <zip destfile="tern_${build.date}.zip">
+         <zipfileset dir="lib" prefix="tern/lib" includes="*.jar *.dll" />
+         <zipfileset dir="." prefix="tern" includes="README COPYRIGHT LICENSE build.xml" />
+         <zipfileset dir="." prefix="tern" includes="*.properties" />
+         <zipfileset dir="." prefix="tern" includes="RCXTowerDrivers/*" />
+         <zipfileset dir="." prefix="tern" includes="cpp/**/*.cpp cpp/**/*.h cpp/**/*.ico cpp/**/*.rc cpp/**/*.vcproj" />
+         <zipfileset dir="." prefix="tern" includes="docs/*.pdf" />
+         <zipfileset dir="." prefix="tern" includes="nqc/*" />
+         <zipfileset dir="." prefix="tern" includes="nsi/**/*.nsi" />
+         <zipfileset dir="." prefix="tern" includes="images/**" />
+         <zipfileset dir="." prefix="tern" includes="sounds/**" />
+         <zipfileset dir="." prefix="tern" includes="java/**/*.java" />
+         <zipfileset dir="." prefix="tern" includes="Tern.exe" />
+      </zip>
+   </target>
+   
+
+<!-- *********************************************************** -->
+<!--                         BUILD                               -->
+<!-- *********************************************************** -->
+   <target name="build" depends="package"/>
+
+   
+   
+<!-- *********************************************************** -->
+<!--                      LAUNCHER                               -->
+<!-- *********************************************************** -->
+   <target name="launcher" depends="init">
+      <exec executable="windres" dir="cpp/launcher">
+         <arg line="-o resources.o" />
+         <arg line="resources.rc" />
+      </exec>
+      <exec executable="g++">
+         <arg line="-o tern.exe"/>
+         <arg line="-mno-cygwin"/>
+         <arg line="cpp/launcher/launcher.cpp"/>
+         <arg line="cpp/launcher/resources.o"/>
+         <arg line="-lgdi32"/>
+      </exec>
+   </target>
+</project>
